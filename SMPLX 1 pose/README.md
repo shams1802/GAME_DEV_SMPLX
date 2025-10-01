@@ -1,4 +1,4 @@
-use SMPL 4 pose app for this
+use SMPL 4 pose app for this https://github.com/shams1802/GAME_DEV/tree/main/Unity/SMPL%204%20pose%20app
 
 use provided scripts in this folder only
 use given smplx model set in SMPLX folder
