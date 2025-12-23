@@ -1,8 +1,3 @@
-Below is a **rewritten, expanded README** that closely follows the **structure, tone, and formatting style** of the **DEMO README**, but is adapted specifically for the **SMPL-X Runtime Shape & Expression Controller**.
-It is intentionally verbose, step-based, and **directly copy-paste ready**.
-
----
-
 # Unity SMPL-X Runtime Shape & Expression Controller
 
 This Unity project provides a complete and reusable system for **real-time body shape and facial expression control** for SMPL-X characters using an automatically generated UI.

@@ -80,10 +80,12 @@ Use only the files already provided.
 - You may delete the scene instances afterward
 
 ### Step 3: Configure PoseController
-- Use this link for better setup - https://github.com/shams1802/GAME_DEV/tree/main/Unity/SMPL%204%20pose%20app
+- Use this link for setup(except asset adding and assigning slots) - https://github.com/shams1802/GAME_DEV/tree/main/Unity/SMPL%204%20pose%20app
+-  ⚠️ Use Assets Provided in this repo only
+-  ⚠️ Use PoseController.cs from the Asset/Script/Before Button
 - Create an empty GameObject
 - Name it PoseManager
-- Add PoseController.cs component
+- Add the PoseController.cs component in PoseManager using Inspector tool
 - Assign the following fields carefully:
 
 #### SMPL-X Root Assignment (Important)
@@ -117,10 +119,12 @@ Use only the files already provided.
      - Keep it hidden initially
 
 ### Step 5: Connect the Panels
+- Replace PoseController.cs with newer version(not Before Button version).
 - Select your PoseManager object. In the Inspector, you will see three fields:
     - Drag your PosePanel from the Hierarchy into the Pose Panel slot.
     - Drag your ShapePanel from the Hierarchy into the Shape Panel slot.
     - Drag your ExpPanel from the Hierarchy into the Exp Panel slot.
+    - Drag your Pose_T_Pose from the Asset/Posses into the T Pose Asset slot.
 
 ### Step 6: Add Shape Toggle Button
 - Right-click Canvas → UI → Button (TextMeshPro)

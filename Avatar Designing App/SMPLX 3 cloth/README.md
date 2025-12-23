@@ -1,304 +1,203 @@
-Below is a **rewritten, expanded README** that closely follows the **structure, tone, and formatting style** of the **DEMO README**, but is adapted specifically for the **SMPL-X Runtime Shape & Expression Controller**.
-It is intentionally verbose, step-based, and **directly copy-paste ready**.
+# Unity SMPL-X Runtime Fabric Controller
+
+## 📖 Overview
+This document elevates the previous pose/shape/expression setup into a fabric‑centric avatar controller. It blends Alembic garments with the existing pose pipeline so that wardrobe changes, pose switches, and UI visibility remain coordinated and predictable during play. The objective is a practical, reusable flow that you can drop into scenes without rewriting scripts or re‑authoring assets.
 
 ---
 
-# Unity SMPL-X Runtime Shape & Expression Controller
+---
 
-This Unity project provides a complete and reusable system for **real-time body shape and facial expression control** for SMPL-X characters using an automatically generated UI.
+## ✨ Features
+- Fabric‑first avatar control with fast garment swapping (Shirt1/Shirt2) powered by Alembic caches.
+- Works alongside the pose system: pose toggles, panel visibility, and T‑pose resets remain intact.
+- Image‑backed buttons and a dedicated RemoveCloth action for clear, visual wardrobe management.
+- Scene‑friendly hierarchy that keeps garments following the rig in both idle and animated use cases.
+- Minimal moving parts: no new frameworks, only a focused script and tidy UI wiring.
 
-Instead of manually editing blendshape values in the Inspector, this system creates **interactive sliders at runtime**, allowing users to modify the avatar’s body proportions and facial expressions while the game or application is running.
+---
 
-The solution is designed for **character customization menus**, **avatar editors**, **research tools**, and **interactive demos** where live feedback is required.
+## 🛠 Workflow Summary
+The process spans authoring in Blender and integration in Unity.
 
-Built entirely inside **Unity**, the system works directly with **SMPL-X** models and integrates cleanly with existing pose or animation pipelines.
+### Blender
+- Author, simulate, and bake garments per item; export as Alembic with correct unit scaling.
+
+### Unity
+- Import the `.abc` files, wire buttons and panels, and connect the AlembicClothingChanger to show, hide, or clear garments while the PoseController maintains UI and pose state.
 
 ---
 
 ## 📑 Table of Contents
 
+* [Overview](#overview)
 * [How It Works](#how-it-works)
 * [Getting Started: Project Setup](#getting-started-project-setup)
-
-  1. [Prerequisites](#1-prerequisites)
-  2. [Scene Preparation](#2-scene-preparation)
+   1. [Prerequisites](#prerequisites)
+   2. [Scene Preparation](#scene-preparation)
 * [Step-by-Step Implementation Guide](#step-by-step-implementation-guide)
-
-  * [Step 1: Create the UI Structure](#step-1-create-the-ui-structure)
-  * [Step 2: Create the Slider Prefab](#step-2-create-the-slider-prefab)
-  * [Step 3: Add the Controller Scripts](#step-3-add-the-controller-scripts)
-  * [Step 4: Configure Inspector References](#step-4-configure-inspector-references)
-  * [Step 5: Runtime Testing](#step-5-runtime-testing)
+   * [Step 1: Blender – Bake and Export Alembic](#step-1-blender--bake-and-export-alembic)
+   * [Step 2: Unity – Install Alembic Package](#step-2-unity--install-alembic-package)
+   * [Step 3: Prepare Assets and Folders](#step-3-prepare-assets-and-folders)
+   * [Step 4: Scene Hierarchy with Alembic Clothes](#step-4-scene-hierarchy-with-alembic-clothes)
+   * [Step 5: UI Buttons and ClothPanel](#step-5-ui-buttons-and-clothpanel)
+   * [Step 6: Add Scripts and Inspector Wiring](#step-6-add-scripts-and-inspector-wiring)
+   * [Step 7: UI Button Wiring (On Click)](#step-7-ui-button-wiring-on-click)
+   * [Step 8: Background and Materials](#step-8-background-and-materials)
 * [Important Notes & Common Mistakes](#important-notes--common-mistakes)
+* [Final Result](#final-result)
 
 ---
 
 ## How It Works
 
-The system is composed of **three main parts** that work together at runtime.
-
-### `SMPLX.cs` (The Model API)
-
-This script already exists as part of the SMPL-X Unity setup and acts as the **interface between code and mesh**.
-
-It exposes:
-
-* A `float[10] betas` array for body shape control
-* A `float[10] expressions` array for facial expressions
-* Methods to apply those values directly to blendshapes
-
-It is responsible for:
-
-* Updating the mesh
-* Applying shape and expression values
-* Adjusting the character’s height to stay grounded
-
----
-
-### `ShapeController.cs` (Body Shape Manager)
-
-This script dynamically generates **10 sliders** at runtime—one for each SMPL-X body shape (Beta 0–9).
-
-Responsibilities:
-
-* Instantiate sliders automatically
-* Assign labels and ranges
-* Listen for value changes
-* Update the SMPL-X `betas[]` array
-* Apply mesh updates instantly
-* Snap the character back to the ground
-
----
-
-### `ExpressionController.cs` (Facial Expression Manager)
-
-This script mirrors the ShapeController but operates on **facial expressions**.
-
-Responsibilities:
-
-* Generate expression sliders (Exp 0–9)
-* Update the `expressions[]` array
-* Apply facial blendshape changes in real time
-
-Both controllers are **fully independent**, making the system modular and easy to extend.
+Blender produces the garment animation, Unity plays it back, and the UI orchestrates both appearance and pose. The PoseController keeps panel visibility and pose application unified (including auto T‑pose when toggling), while AlembicClothingChanger exposes concise actions for showing Shirt1/2 or clearing all clothing. The result is a coherent loop: choose a pose, apply or remove garments, and keep the character grounded and readable.
 
 ---
 
 ## Getting Started: Project Setup
 
-Follow these steps starting from a **clean Unity scene**.
+### Prerequisites
+- Unity 2020.x or newer with TextMeshPro installed for crisp UI labels and icons.
+- Alembic package from the Unity Registry to support import and playback of `.abc` caches.
+- Garments baked and exported from Blender with `Scale = 100` so world units match.
+- A character rig available so garments can be parented and follow motion.
 
----
-
-### 1. Prerequisites
-
-Before implementing the system, ensure the following requirements are met:
-
-* **Unity Project**
-
-  * Unity 2019.x or newer recommended
-  * UI system enabled
-
-* **SMPL-X Model Imported**
-
-  * Correctly imported `.fbx`
-  * Mesh contains blendshapes:
-
-    * `Shape000` → `Shape009`
-    * `Exp000` → `Exp009`
-
-* **SMPLX.cs Script Available**
-  Must contain:
-
-  ```csharp
-  public float[] betas = new float[10];
-  public float[] expressions = new float[10];
-
-  public void SetBetaShapes();
-  public void SetExpressions();
-  public void SnapToGroundPlane();
-  ```
-
-* **TextMeshPro Installed**
-
-  * Usually preinstalled in modern Unity versions
-
-If you have already completed **SMPL-X Pose setup**, no additional configuration is required.
-
----
-
-### 2. Scene Preparation
-
-1. Create a **new 3D Scene**
-2. Drag your **SMPL-X character** into the Hierarchy
-3. Adjust the **Camera** and **Light** so the model is visible
-4. Ensure the character is facing forward and grounded
+### Scene Preparation
+- Open the target scene and verify camera and lighting present the avatar clearly.
+- Ensure the character’s transforms are reset and uniform `(1,1,1)` to prevent mismatched offsets.
+- Confirm the EventSystem exists; add one if missing to enable button interaction.
 
 ---
 
 ## Step-by-Step Implementation Guide
 
-### Step 1: Create the UI Structure
+### Step 1: Blender – Bake and Export Alembic
 
-1. Right-click in Hierarchy → **UI → Canvas**
-
-   * EventSystem will be created automatically
-
-2. Under the Canvas, create **two empty UI Panels**:
-
-   * `ShapePanel`
-   * `ExpPanel`
-
-3. Position the panels as desired (left/right or stacked)
-
-4. Add a **Vertical Layout Group** to both panels:
-
-   * This ensures sliders stack correctly
-   * Adjust Padding and Spacing as needed
+- Finalize and **Bake** each garment (e.g., `Shirt1`, `Shirt2`) so motion is deterministic.
+- Export per garment with **Selected Objects** enabled and **Scale = 100** to preserve unit parity.
+- Keep Alembic files separate (`Shirt1.abc`, `Shirt2.abc`) for modular swapping inside Unity.
 
 ---
 
-### Step 2: Create the Slider Prefab
+### Step 2: Unity – Install Alembic Package
 
-1. Right-click **ShapePanel** → **UI → Slider – TextMeshPro**
-
-2. Adjust:
-
-   * Width / height
-   * Font size
-   * Colors (optional)
-
-3. Add a **Layout Element** component:
-
-   * Set **Min Height = 30** (recommended)
-
-4. Drag the configured slider into:
-
-   ```
-   Assets/Prefabs/
-   ```
-
-5. Delete the slider from the scene
-   (Only the prefab is needed)
+- Window → Package Manager → Unity Registry → install **Alembic** to enable `.abc` import and playback.
 
 ---
 
-### Step 3: Add the Controller Scripts
+### Step 3: Prepare Assets and Folders
 
-1. Create an empty GameObject → rename to **ShapeManager**
-2. Attach:
-
-   * `ShapeController.cs`
-   * `ExpressionController.cs`
-
-These scripts will handle **all runtime UI generation**.
+- In `Assets`, keep `Model` and `Pics` at the top level for clarity.
+- In `Assets/Scripts`, add `AlembicClothingChanger.cs` and replace any old `PoseController.cs` reference for cloth handling with this script.
+- Move Pose images into `Assets/Pics/Pose` (rename the folder to `Pose`).
+- Confirm `Shirt1.abc` and `Shirt2.abc` are imported and ready.
 
 ---
 
-### Step 4: Configure Inspector References
+### Step 4: Scene Hierarchy with Alembic Clothes
 
-Select **ShapeManager** and assign the following fields:
+- Drop `Shirt1.abc` and `Shirt2.abc` into the scene and parent them to the character rig so they follow animation.
+- Target hierarchy (based on the provided screenshot):
 
-#### ShapeController
+```plaintext
+SampleScene
+└── smplx-male
+      ├── SMPLX-male
+      │   └── SMPLX-mesh-male
+      └── root
+Shirt1 (new)
+Shirt2 (new)
+PoseManager
+ShapeManager
+Canvas
+      ├── PosePanel (pose buttons)
+      ├── ClothPanel (new)
+      ├── ShapePanel
+      ├── ExpPanel
+      ├── RotationSlider
+      └── RemoveCloth (new)
+      └── ToggleShape_Button
+EventSystem
+Background (new)
+```
 
-* **SMPLX Model** → drag the SMPL-X character
-* **Shape Panel** → drag `ShapePanel`
-* **Slider Prefab** → drag the slider prefab
-
-#### ExpressionController
-
-* **SMPLX Model** → same character
-* **Exp Panel** → drag `ExpPanel`
-* **Slider Prefab** → same prefab
-
-⚠️ All fields **must be assigned** before pressing Play.
+- Align garments to the rig and keep scales at (1,1,1) to avoid drift.
 
 ---
 
-### Step 5: Runtime Testing
+### Step 5: UI Buttons and ClothPanel
 
-1. Press **Play**
-2. Sliders are generated automatically
-3. Adjusting a slider:
+- Duplicate `ToggleShape_Button`, rename to `RemoveCloth`; delete its `Text (TMP)` child, anchor bottom-left for quick access.
+- Select cross image from `Assets/Pics`; set Texture Type = Sprite (2D and UI), Sprite Mode = Single → Apply.
+- On `RemoveCloth` button, drag the sprite into the Image component’s **Source Image**.
+- Duplicate `PosePanel`, rename to `ClothPanel`, place above `ExpPanel`.
+- Inside `ClothPanel`, keep only two buttons (`Shirt1`, `Shirt2`); drop extras and apply the correct color materials (green, blue).
+- Add images to Shirt buttons:
+   - Select an image from `Assets/Pics/Cloth`; set Texture Type = Sprite (2D and UI), Sprite Mode = Single → Apply.
+   - On each button, drag the sprite into the Image component’s **Source Image**.
+- Add materials to garments:
+   - From `Assets/Pics/Cloth/Materials`, drag the proper material onto `Shirt1/Shirt1/Plane` (repeat for Shirt2 with its material).
 
-   * Updates the mesh instantly
-   * Changes body proportions or facial expressions
-   * Keeps the character grounded
+---
 
-✅ No manual UI wiring is required.
+### Step 6: Add Scripts and Inspector Wiring
+
+- In PoseManager (Pose Management), assign:
+   - Cloth Panel slot → `ClothPanel`
+   - Remove Cloth Button slot → `RemoveCloth`
+- Add `AlembicClothingChanger.cs` to the PoseManager via Add Component in the Inspector. In its Inspector:
+   - `Shirt1` → `Shirt1`
+   - `Shirt2` → `Shirt2`
+
+---
+
+### Step 7: UI Button Wiring (On Click)
+
+- ClothPanel → Shirt1 Button, under Inspector tool:
+   - Click `+`, then Drag `PoseManager` → `PoseController → ApplyPose(int)` → enter `5`
+   - Click `+`, then Drag `PoseManager` → `AlembicClothingChanger → ShowShirt1()`
+   - Click `+`, then Drag `RotationSlider` → `Slider → float value` → enter `0`
+
+- ClothPanel → Shirt2 Button: same as above, but select `ShowShirt2()`.
+
+- RemoveCloth Button:
+   - Click `+`, then Drag `PoseManager` → `PoseController → ApplyPose(int)` → enter `5`
+   - Click `+`, then Drag `PoseManager` → `AlembicClothingChanger → RemoveAllClothing()`
+   - Click `+`, then Drag `RotationSlider` → `Slider → float value` → enter `0`
+
+- ToggleUI_Button:
+   - Click `+`, then Drag `PoseManager` → `PoseController → TogglePoseUIVisiblity()`
+   - Click `+`, then Drag `PoseManager` → `AlembicClothingChanger → RemoveAllClothing()`
+   - Click `+`, then Drag `RotationSlider` → `Slider → float value` → enter `0`
+   - (T-pose is auto-handled inside `TogglePoseUIVisiblity()`, no extra ApplyPose needed.)
+
+- PosePanel buttons (ArmsUp, Running, SideKick, Sitting, Surprise, TPose):
+   - Each On Click(): `ApplyPose(int)` with values 0–5 respectively, plus `RemoveAllClothing()` to clear garments when changing poses.
+
+- RotationSlider, On Value Changed (Single):
+   - Click `+`, then Drag `PoseManager` → `PoseController → SetRootRotation` (Dynamic Float)
+
+---
+
+### Step 8: Background and Materials
+
+- Background: create empty child `Background`, add component Sprite Renderer.
+   - Import `BackGround` into `Assets/Pics` (or your own); set Texture Type = Sprite (2D and UI), Sprite Mode = Single → Apply.
+   - Assign the sprite to Sprite Renderer and position via Transform to frame the avatar.
+- SMPLX model material: choose from `Assets/SMPLX/Materials` and drag onto `smplx-male/SMPLX-male/SMPLX-mesh-male`.
 
 ---
 
 ## Important Notes & Common Mistakes
 
-### ❌ Model jumps when posing/shape/exp changes
-
-*Cause:* `SnapToGroundPlane()` moves the root to Y=0. If your floor is not at Y=0 or scales differ, the model can pop upward (seen between laptops).
-
-*Fix options:*
-- **Disable auto-snap (quick):** In `ShapeController.cs`, comment out `smplxModel.SnapToGroundPlane()` so sliders don’t move the root.
-- **Match grounding:** Ensure the scene floor and character root start at Y=0; keep character and parent scales at (1,1,1).
-- **Prefab parity:** Check prefab overrides or Unity version differences that might change mesh bounds; verify “Auto Snap to Ground”/similar toggle is consistent across machines.
-- **Alternate approach:** If needed, snap to a specific floor object instead of Y=0.
-
-### ❌ Missing Inspector References
-
-**Problem:**
-NullReferenceException on Play
-
-**Solution:**
-Ensure all public fields are assigned correctly.
-
----
-
-### ❌ No Layout Group on Panels
-
-**Problem:**
-All sliders overlap in the center
-
-**Solution:**
-Always add a **Vertical Layout Group** to panels.
-
----
-
-### ❌ Incorrect Lambda Usage in Loops
-
-**Problem:**
-All sliders control the same parameter
-
-**Solution:**
-Use a local index copy inside loops:
-
-```csharp
-int index = i;
-```
-
----
-
-### ❌ Incorrect Slider Prefab
-
-**Problem:**
-Missing label or broken UI
-
-**Solution:**
-Use **Slider – TextMeshPro** and verify hierarchy contains:
-
-* `Slider`
-* `TextMeshProUGUI`
+- Keep Alembic export scale at `100` to avoid tiny garments; keep scene scales at (1,1,1).
+- Ensure EventSystem exists so UI clicks register; confirm TextMeshPro is present for labels.
+- If garments fail to follow the rig, re-parent and reset transforms before Play.
+- Use the correct sprites/materials (green/blue) to differentiate Shirt1 vs. Shirt2 visually.
 
 ---
 
 ## Final Result
 
-After completing this setup, you will have:
-
-* Fully dynamic **shape & expression UI**
-* Real-time SMPL-X mesh updates
-* Clean, modular controller scripts
-* A reusable system that integrates easily with:
-
-  * Pose control
-  * Cloth toggling
-  * Character customization menus
-
-This system is designed to scale and can be extended with **pose, clothing, or animation controls** without restructuring the core logic.
+- A cloth-led avatar experience: PoseController handles pose/UI toggles, AlembicClothingChanger manages garments, and the UI surfaces ClothPanel + RemoveCloth for fast swaps.
+- Shirt1/Shirt2 display with images and colored materials; RemoveCloth clears outfits; ToggleUI syncs panel visibility and pose state automatically.
