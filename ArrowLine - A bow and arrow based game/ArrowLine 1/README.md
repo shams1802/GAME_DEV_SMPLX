@@ -13,7 +13,7 @@ A Unity project for a third-person bow and arrow combat system with realistic ai
 - [Step-by-Step Implementation](#step-by-step-implementation)
   - [Phase 1: Project Foundation Setup](#phase-1-project-foundation-setup)
   - [Phase 2: Character Movement and Camera Control](#phase-2-character-movement-and-camera-control)
-  - [Phase 3: Weapon System Creation](#phase-3-weapon-system-creation)
+  - [Phase 3: Combat Stance and Animation Rigging](#phase-3-combat-stance-and-animation-rigging)
   - [Phase 4: Core Combat Scripting](#phase-4-core-combat-scripting)
   - [Phase 5: Advanced Aiming Mechanics](#phase-5-advanced-aiming-mechanics)
   - [Phase 6: Equipment Management System](#phase-6-equipment-management-system)
@@ -61,10 +61,112 @@ Assets
 │       └── (erika_archer.fbx and 39 other fbx)
 ├── Scripts
 │   ├── Camera
-│   └── Character	
-│       ├── InputSystem.cs
-│       └── Movement.cs
+│   │   └── CameraController.cs
+│   ├── Character	
+│   │   ├── InputSystem.cs
+│   │   └── Movement.cs
+│   └── Weapon	
+│       ├── Arrow.cs
+│       └── Bow.cs
 └── UI(to be added)
+```
+
+```plaintext
+ENV
+├── Plane
+├── Cube1
+├── Cube2
+├── Cube3
+└── Cube4
+
+Player
+└── erika_archer
+    ├── Erika_Archer_Meshes
+    │   ├── Erika_Archer_Body_Mesh
+    │   ├── Erika_Archer_Clothes_Mesh
+    │   ├── Erika_Archer_Eyelashes_Mesh
+    │   └── Erika_Archer_Eyes_Mesh
+    │
+    └── Hips
+        ├── LeftUpLeg
+        │   └── LeftLeg
+        │       └── LeftFoot
+        │           └── LeftToeBase
+        │               └── LeftToe_End
+        │
+        ├── RightUpLeg (Same as LeftUpLeg)
+        │
+        └── Spine
+            └── Spine1
+                └── Spine2
+                    ├── LeftShoulder
+                    │   └── LeftArm
+                    │       └── LeftForeArm
+                    │           └── LeftHand
+                    │               ├── Wooden Bow
+                    │               │   ├── Wooden Bow_1
+                    │               │   │   └── WB.main
+                    │               │   │       │
+                    │               │   │       ├── WB.down.bone
+                    │               │   │       │   └── WB.down.bone.001
+                    │               │   │       │       └── WB.down.bone.002
+                    │               │   │       │           └── WB.down.bone.003
+                    │               │   │       │               └── WB.down.bone.004
+                    │               │   │       │                   └── WB.down.bone.005
+                    │               │   │       │                       └── WB.down.bone.005_end
+                    │               │   │       │
+                    │               │   │       ├── WB.down.horn
+                    │               │   │       │   └── WB.down.horn_end
+                    │               │   │       │
+                    │               │   │       ├── WB.down.shoulder
+                    │               │   │       │   └── WB.down.ik
+                    │               │   │       │       └── WB.down.ik_end
+                    │               │   │       │
+                    │               │   │       ├── WB.string
+                    │               │   │       │   └── WB.string_end
+                    │               │   │       │
+                    │               │   │       ├── WB.top.bone
+                    │               │   │       │   └── WB.top.bone.001
+                    │               │   │       │       └── WB.top.bone.002
+                    │               │   │       │           └── WB.top.bone.003
+                    │               │   │       │               └── WB.top.bone.004
+                    │               │   │       │                   └── WB.top.bone.005
+                    │               │   │       │                       └── WB.top.bone.005_end
+                    │               │   │       │
+                    │               │   │       ├── WB.top.horn
+                    │               │   │       │   └── WB.top.horn_end
+                    │               │   │       │
+                    │               │   │       ├── WB.top.shoulder
+                    │               │   │       │   └── WB.top.ik
+                    │               │   │       │       └── WB.top.ik_end
+                    │               │   │       │
+                    │               │   │       └── StringInitialPos
+                    │               │   │
+                    │               │   └── wooden bow_1
+                    │               │
+                    │               ├── LeftHandIndex1
+                    │               │   └── LeftHandIndex2
+                    │               │       └── LeftHandIndex3
+                    │               │           └── LeftHandIndex4
+                    │               ├── LeftHandMiddle (1-4)
+                    │               ├── LeftHandRing (1-4)
+                    │               ├── LeftHandPinky (1-4)
+                    │               └── LeftHandThumb (1-4)
+                    │
+                    ├── Neck
+                    │   └── Head
+                    │       ├── HeadTop_End
+                    │       ├── LeftEye
+                    │       └── RightEye
+                    │
+                    └── RightShoulder (Same as LeftShoulder except for Wooden Bow)
+
+CameraHolder
+└── Center
+    ├── Main Camera
+    │   └── UICamera
+    └── CamPosition
+
 ```
 
 
@@ -109,8 +211,11 @@ CameraHolder
 ## Step-by-Step Implementation
 
 ---
+---
 
 ## Phase 1: Project Foundation Setup
+
+---
 
 ### Step 1: Import Character Assets
 
@@ -268,7 +373,9 @@ Select the **Parameters** tab, click `+`, and create:
 
   * Set **Blend Type** to `2D Simple Directional`
   * Set **Parameters** to `strafe` (X) and `forward` (Y)
-* Under **Motion**, click `+` → `Add Motion Field` five times and assign:
+* Under **Motion**, click `+` → `Add Motion Field` five times
+* Go to `Assets/Assets/Longbow` folder and find `standing idle 01`, `standing walk (front/back/left/right)`, and `standing run (front/back/left/right)`
+* Click on small triangle there and assign:
 
   * Idle (0,0)
   * Walk Forward (0,1)
@@ -314,7 +421,7 @@ Assets
 ```
 
 
-* Copy `Movement.cs` from the provided folder `Assets/Scripts/Camera/` and paste its contents into your `Movement.cs`
+* Copy `Movement.cs` from the provided folder `Assets/Scripts/Character/` and paste its contents into your `Movement.cs`
 
 ---
 
@@ -336,7 +443,7 @@ Assets
 ### Step 3: Input System
 
 * Copy `InputSystem.cs` from:
-  `Assets/Scripts/InputSystem/1 just player input/`
+  `Assets/Scripts/Character/InputSystem/1 Player Input/`
 * Attach `InputSystem.cs` to `Player`
 
 ![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%202,%20STEP%203.png)
@@ -391,10 +498,10 @@ CameraHolder
 
 * Inside `Assets/Scripts/Camera`, create `CameraController.cs`
 * Copy contents from:
-  `Assets/Scripts/Camera/1 just camera and player/CameraController.cs`
+  `Assets/Scripts/Camera/1 Camera and Player Integration/CameraController.cs`
 * Attach this script to `CameraHolder`
 * Go to `Assets/Scripts/InputSystem`, replace `InputSystem.cs` from provided folder:
-  `Assets/Scripts/InputSystem/2 with camera/`
+  `Assets/Scripts/Character/InputSystem/2 Camera Integration/`
 
 ---
 
@@ -409,7 +516,7 @@ CameraHolder
 ### Step 7: Camera Collision Fix
 
 * Replace the contents of `CameraController.cs` with:
-  `Assets/Scripts/Camera/1 collision/CameraController.cs`
+  `Assets/Scripts/Camera/2 Collision Avoidance/CameraController.cs`
 
 **CamPosition Setup**
 
@@ -434,123 +541,185 @@ CameraHolder
 ✅ Camera collision is now resolved
 
 ---
+## Phase 3: Combat Stance and Animation Rigging
+
+---
+
+### STEP 1: Import Weapon Assets
+
+* Add weapon assets **Free medieval weapons** into `Assets/Assets`
+* You can either:
+  * Download from Unity Asset Store:  
+    https://assetstore.unity.com/packages/3d/props/weapons/free-pack-of-medieval-weapons-136607  
+  * OR use the provided `Free medieval weapons` folder from this repository
+
+* After importing or copying, confirm your Project window folder structure looks **exactly** like this:
+
+```plaintext
+Assets
+├── Assets
+│   ├── Free medieval weapons
+│   │   ├── Materials
+│   │   ├── Models
+│   │   ├── Prefabs
+│   │   ├── Scenes
+│   │   ├── Textures
+│   │   └── README.md
+│   └── Longbow
+├── Scripts
+└── UI (to be added)
+````
+
+---
+
+### STEP 2: Animator Parameters and Bow Animations Setup
+
+* Go to **Animator** window, under **Parameters** tab, create three new bools name them `aim`, `fire` and `pullString` (default false)
+
+* Navigate to `Assets/Assets/Longbow` and locate the following animation files:
+
+  * `standing aim (overdraw/recoil)`
+  * `standing draw arrow`
+  * `standing (equip/disarm) bow`
+  * `standing aim walk (back/front/left/right)`
+
+**Pull String**
+
+* Select `standing aim overdraw`
+* In the Inspector, rename it from `mixamo.com` to `Pull String`
+* Disable **Loop Time**
+* Under **Root Transform Rotation**, enable **Bake Into Pose** and set **Based Upon** to `Original`
+* Under **Root Transform Position (Y)**, enable **Bake Into Pose** and set **Based Upon** to `Feet`
+* Click **Apply**
 
 
-### Phase 3: Weapon System Creation
+**Fire Arrow, Draw Arrow, Equip Bow, Disarm Bow**
 
-This phase covers the creation and configuration of bow and arrow GameObjects, including proper hierarchy setup, positioning, and prefab creation.
+* Apply the **same settings as Pull String**, only change names:
 
-#### Step 3.1: Create Bow and Arrow GameObjects
+  * `standing aim recoil` → rename to `Fire Arrow`
+  * `standing draw arrow` → rename to `Draw Arrow`
+  * `standing equip bow` → rename to `Equip Bow`
+  * `standing disarm bow` → rename to `Disarm Bow`
 
-**Create Bow Object**
-1. In the Hierarchy, right-click and select Create Empty
-2. Rename the empty GameObject to "Bow"
-3. Reset its transform to zero (Position: 0,0,0 / Rotation: 0,0,0 / Scale: 1,1,1)
 
-**Add Bow 3D Model**
-1. If using a custom bow model:
-   - Import the bow FBX file into Assets/Models/Weapons/
-   - Drag the bow model as a child of the Bow GameObject
-2. If creating a placeholder:
-   - Right-click Bow → 3D Object → Cube
-   - Scale the cube to resemble a bow shape (e.g., X:0.1, Y:1.5, Z:0.1)
-   - Add a cylinder for the string if desired
+**Aim Walk (Front/Back/Left/Right)**
 
-**Create Arrow Object**
-1. Right-click Bow in Hierarchy → Create Empty
-2. Name it "Arrow"
-3. Position it at the bow's nocking point (approximately center of bowstring)
+* Select each `standing aim walk` animation one by one
+* Rename from `mixamo.com` to `Aim Walk Front`, `Aim Walk Back`, `Aim Walk Left`, `Aim Walk Right`
+* Enable **Loop Time** and **Loop Pose**
+* Under **Root Transform Rotation**, enable **Bake Into Pose** and set **Based Upon** to `Original`
+* Under **Root Transform Position (Y)**, enable **Bake Into Pose** and set **Based Upon** to `Feet`
+* Click **Apply**
 
-**Add Arrow 3D Model**
-1. If using a custom arrow model:
-   - Import arrow FBX into Assets/Models/Weapons/
-   - Drag as child of Arrow GameObject
-2. If creating placeholder:
-   - Right-click Arrow → 3D Object → Cylinder
-   - Rotate 90 degrees on Z-axis to orient horizontally
-   - Scale to arrow proportions (X:0.05, Y:0.5, Z:0.05)
-   - Add a cone at the tip for the arrowhead
 
-**Add ArrowSpawn Point**
-1. Right-click Bow → Create Empty
-2. Name it "ArrowSpawnPoint"
-3. Position it at the exact point where arrows should spawn when released
-4. This is typically slightly forward of the bow to prevent clipping
+---
 
-#### Step 3.2: Position Bow on Character
+### STEP 3: Upper Body Avatar Mask and Animator Layer
 
-**Locate Character Hand Bone**
-1. Drag your character model into the Scene
-2. In Hierarchy, expand the character GameObject
-3. Navigate through the bone hierarchy to find the hand bone
-4. Path typically: Character → Armature → Spine → Shoulder → UpperArm → LowerArm → Hand
-5. Right-click the hand bone you found
+* Navigate to `Assets/Assets/Longbow/Animator`, right click → `Create` → `Avatar Mask` and rename it to `UpperBody`
 
-**Attach Bow to Hand**
-1. Drag the Bow GameObject onto the character's right hand bone in the Hierarchy
-2. The Bow is now a child of the hand bone
-3. Select the Bow GameObject
-4. In the Scene view, use the transform tools to position the bow:
-   - Position: Adjust so the bow grip aligns with the palm
-   - Rotation: Rotate so the bow faces the correct direction
-   - Scale: Adjust if the bow is too large or small for the character
+* Select `UpperBody`, in the **Inspector** tab, under **Humanoid**, disable `Lower Body`
 
-**Fine-Tune Transform Values**
-Manual adjustment example (values will vary based on your character):
-```
-Bow Transform (relative to hand bone):
-Position: X: 0.05, Y: -0.1, Z: 0
-Rotation: X: 90, Y: 0, Z: 0
-Scale: X: 1, Y: 1, Z: 1
-```
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/untitled.png)
 
-**Test in Play Mode**
-1. Enter Play Mode
-2. Move the character around
-3. Verify the bow stays attached to the hand during animations
-4. Exit Play Mode and readjust if necessary
+* Open **Animator**, under **Layers** tab
+* Click the `+` button and rename it to `UpperBody` and click the **gear icon**
 
-#### Step 3.3: Create Weapon Prefabs
+  * Set **Mask** → `UpperBody`
+  * Set **Weight** → `1`
 
-**Create Bow Prefab**
-1. In Hierarchy, right-click the Bow GameObject and select "Copy"
-2. Right-click in Project window at Assets/Prefabs/Weapons/ → "Paste"
-3. Alternatively, drag Bow from Hierarchy into Assets/Prefabs/Weapons/
-4. The Bow object in Hierarchy now shows blue text (prefab instance)
-5. Name the prefab "BowPrefab"
+---
 
-**Create Arrow Prefab**
-1. Detach Arrow from Bow temporarily (drag it out in Hierarchy)
-2. Drag Arrow from Hierarchy into Assets/Prefabs/Weapons/
-3. Name it "ArrowPrefab"
-4. Delete the loose Arrow instance from Hierarchy (the original will remain in BowPrefab)
+### STEP 4: Upper Body Arrow Logic State Machine
 
-**Configure Arrow Prefab for Physics**
-1. Double-click ArrowPrefab in Project window to open Prefab mode
-2. Select the root Arrow GameObject
-3. In Inspector, click "Add Component"
-4. Add "Rigidbody" component
-5. Configure Rigidbody settings:
-   - Mass: 0.05 (lightweight)
-   - Drag: 0.1
-   - Angular Drag: 0.05
-   - Use Gravity: Enabled
-   - Is Kinematic: Disabled
-6. Add "Capsule Collider" component
-7. Configure Collider:
-   - Radius: Match arrow shaft thickness
-   - Height: Match arrow length
-   - Direction: Z-Axis (arrow points forward)
-8. Click "Auto Save" or save manually
+* In the **Project window**, go to `Assets/Assets/Longbow`
 
-**Verify Prefab Setup**
-1. Exit Prefab mode
-2. Drag ArrowPrefab into the Scene temporarily
-3. Enter Play Mode
-4. Verify the arrow falls due to gravity
-5. Exit Play Mode and delete the test arrow
+* Expand (click small triangle) these animations:
 
-This completes the weapon system GameObject structure, ready for script integration in the next phase.
+  * `standing draw arrow`
+  * `standing aim overdraw`
+  * `standing aim recoil`
+
+* Drag and drop these into the **UpperBody layer** in Animator:
+
+  * `Draw Arrow`
+  * `Pull String`
+  * `Fire Arrow`
+
+
+* Right click inside **UpperBody layer**, select `Create State` → `Empty` and rename it to `Empty`
+* Right click `Empty` → `Set as Layer Default State`
+
+
+**Transitions**
+
+| From | To | Has Exit Time | Condition |
+| :--- | :--- | :---: | :--- |
+| **Empty** | **Draw Arrow** | No | `aim == true` |
+| **Draw Arrow** | **Pull String** | No | `pullString == true` |
+| **Pull String** | **Fire Arrow** | No | `fire == true` |
+| **Fire Arrow** | **Draw Arrow** | **Yes** | `aim == true` |
+| **Any State** | **Empty** | No | `aim == false` |
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/untitled.png)
+
+* Right click inside **UpperBody** area
+* Select `Create Sub-State Machine` and rename it to `Arrow Logic`
+
+* Select and drag `Draw Arrow`, `Pull String` and `Fire Arrow` into `Arrow Logic`
+
+---
+
+### STEP 5: Aim Movement Blend Tree
+
+* Switch to **Base Layer**, duplicate `Run` and rename it to `Aim Move`
+
+* Open `Aim Move` and change motions to:
+
+  * Idle (0,0)
+  * Aim Walk Forward (0,1)
+  * Aim Walk Back (0,-1)
+  * Aim Walk Left (-1,0)
+  * Aim Walk Right (1,0)
+
+---
+
+#### Transitions
+
+| From | To | Has Exit Time | Conditions |
+| :--- | :--- | :---: | :--- |
+| **Walk** | **Aim Move** | No | `aim == true` |
+| **Aim Move** | **Walk** | No | `aim == false`, `sprint == false` |
+| **Run** | **Aim Move** | No | `aim == true` |
+| **Aim Move** | **Run** | No | `aim == false`, `sprint == true` |
+
+---
+
+### STEP 6: Bow Model Attachment
+
+* Go to `Assets/Assets/Free medieval weapons/Models`, select `Wooden Bow.fbx` and drag it to **LeftHand** (`Player/erika_archer/Hips/Spine/Spine1/Spine2/LeftShoulder/LeftArm/LeftForeArm/LeftHand`)
+
+* Adjust **Position / Rotation** so the bow sits naturally in the left hand
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/untitled.png)
+
+---
+
+### STEP 7: Bow Script and Input Replacement
+
+* In `Assets/Scripts`, create a folder named `Weapon`
+* Inside it, create `Bow.cs` and copy contents from:
+  `Assets/Scripts/Weapon/Bow/1 Bow Unlit`
+
+* Navigate to `Assets/Scripts/Character` and replace `InputSystem.cs` entire contents with:
+  `Assets/Scripts/Character/InputSystem/3 Bow Equipment`
+
+
+
+* Press **Play** and Test.
+
+If animations and bow behavior respond, Phase 3 is complete.
 
 ### Phase 4: Core Combat Scripting
 
