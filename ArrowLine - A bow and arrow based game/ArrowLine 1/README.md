@@ -1,4 +1,4 @@
-# Unity Third-Person Bow & Arrow Combat System
+﻿# Unity Third-Person Bow & Arrow Combat System
 
 A Unity project for a third-person bow and arrow combat system with realistic aiming, animation, and physics. Designed for action-adventure gameplay, supporting character movement, equipment, and combat mechanics.
 
@@ -47,17 +47,19 @@ Implements a third-person bow and arrow system with:
 ```plaintext
 Assets
 └── Assets
-    └── Longbow
-        ├── Animator
-        ├── Materials
-        ├── Textures
-        └── (erika_archer.fbx + animations)
-Scripts
-├── Camera
-└── Character
-UI (to be added)
-Scenes
-````
+│ 	└── Longbow
+│ 	    	├── Animator
+│ 	    	├── Materials
+│ 		    ├── Textures
+│ 		    └── (erika_archer.fbx and animations)
+├── Scripts
+│	├── Camera
+│	│	    └── CameraController.cs
+│	└── Character
+│		    ├── InputSystem.cs
+│		    └── Movement.cs
+└── UI
+```
 
 ---
 
@@ -88,8 +90,8 @@ Scenes
 
 ### Step 1: Import Character Assets
 
-* Download **Erica Archer** from [https://www.mixamo.com/#/](https://www.mixamo.com/#/) or use provided `Longbow`
-* Create the following structure:
+* Download **Erica Archer** from [mixamo](https://www.mixamo.com/#/) or use the already provided `Longbow` folder
+* Create the following folder structure :
 
 ```plaintext
 Assets
@@ -101,48 +103,50 @@ Assets
         └── (erika_archer.fbx + 39 animation fbx files)
 Scripts (to be added)
 UI (to be added)
-```
+````
 
-* Drag `erika_archer.fbx` into the **Hierarchy**
+* Drag `erika_archer.fbx` from `Assets/Assets/Longbow` into the **Hierarchy**
 
-* Select `erika_archer.fbx` in Project window:
+* Now select `erika_archer.fbx` from `Assets/Assets/Longbow` (not the Hierarchy one) and view its **Inspector** tab on the right:
 
   * **Rig Tab**
 
-    * Animation Type: `Humanoid`
-    * Avatar Definition: `Create From This Model`
+    * Set **Animation Type** to `Humanoid`
+    * Set **Avatar Definition** to `Create From This Model`
     * Click **Apply**
   * **Materials Tab**
 
-    * Click **Extract Textures** → `Assets/Assets/Longbow/Textures`
-    * Fix Normal Map popup
-    * Click **Extract Materials** → `Assets/Assets/Longbow/Materials`
+    * Click **Extract Textures** and select the folder `Assets/Assets/Longbow/Textures`
+    * A **Normal Map** popup will appear — click **Fix Now**
+    * Click **Extract Materials** and select the folder `Assets/Assets/Longbow/Materials`
 
-* For **every animation FBX**:
+* For **every animation FBX file** inside `Assets/Assets/Longbow`:
 
-  * Rig → Humanoid
-  * Avatar Definition → `Copy From Other Avatar`
-  * Select `erika_archerAvatar`
+  * Select the animation file
+  * Go to **Rig Tab**
+  * Set **Animation Type** to `Humanoid`
+  * Set **Avatar Definition** to `Copy From Other Avatar`
+  * Choose `erika_archerAvatar` from the dropdown
   * Click **Apply**
 
 ---
 
 ### Step 2: Environment Setup
 
-* Create empty GameObject `ENV`
-* Add:
-
-  * Plane (ground)
-  * 4 Cubes (walls)
-* Adjust scale and position
+* In the **Hierarchy** window, right click → `Create Empty` and rename it to `ENV`
+* Select `ENV`, then right click → `3D Object` → `Plane` (this will be the ground)
+* Select `ENV` again, then right click → `3D Object` → `Cube`
+* Duplicate the Cube until you have **4 cubes**
+* Adjust the **position and scale** of the cubes to form simple walls around the plane
 
 ---
 
 ### Step 3: Player Hierarchy
 
-* Create empty GameObject `Player`
-* Reset Transform
-* Drag `erika_archer` under Player
+* In the **Hierarchy**, right click → `Create Empty` and rename it to `Player`
+* Select `Player`, then in the **Inspector**, open the Transform component
+* Click the **three dots** and choose **Reset** to zero all transform values
+* Drag `erika_archer` (the one already in the scene) under `Player`
 
 ```plaintext
 ENV
@@ -159,59 +163,83 @@ Player
 
 ### Step 4: Animator Controller
 
-* In `Assets/Assets/Longbow/Animator`
+* Navigate to `Assets/Assets/Longbow/Animator` in the Project window
 
-  * Create Animator Controller `PlayerAnim`
-* Select `Player`
+  * Right click → `Create` → `Animator Controller`
+  * Rename it to `PlayerAnim`
+* Select `Player` in the Hierarchy, then in the Inspector:
 
-  * Add **Animator** component
+  * Click **Add Component** → add **Animator**
   * Assign:
 
-    * Controller → `PlayerAnim`
-    * Avatar → `erika_archerAvatar`
+    * **Controller** → `PlayerAnim`
+    * **Avatar** → `erika_archerAvatar`
 
 ---
 
 ### Step 5: Animation Configuration
 
+Select `Window` → `Animation` → `Animator` to open the Animator window
+
+Then in the Project window under `Assets/Assets/Longbow`, locate:
+`standing idle 01`, `standing walk (front/back/left/right)`, and `standing run (front/back/left/right)`
+
 **Idle**
 
-* Rename `standing idle 01` → `Idle`
-* Loop Time ✔
-* Loop Pose ✔
-* Root Transform Position (Y): Bake Into Pose → Feet
+* Select `standing idle 01`
+* In the Inspector, rename it from `mixamo.com` to `Idle`
+* Enable **Loop Time** and **Loop Pose**
+* Under **Root Transform Position (Y)**:
 
-**Walk (front/back/left/right)**
+  * Enable **Bake Into Pose**
+  * Set **Based Upon** to `Feet`
+* Click **Apply**
 
-* Loop Time ✔
-* Loop Pose ✔
-* Root Rotation: Bake Into Pose → Original
-* Root Position (Y): Bake Into Pose → Feet
+**Walk (Front/Back/Left/Right)**
 
-**Run (front/back/left/right)**
+* Select each `standing walk` animation one by one
+* Rename from `mixamo.com` to `Walk Front`, `Walk Back`, `Walk Left`, `Walk Right`
+* Enable **Loop Time** and **Loop Pose**
+* Under **Root Transform Rotation**:
 
-* Same settings as Walk
+  * Enable **Bake Into Pose**
+  * Set **Based Upon** to `Original`
+* Under **Root Transform Position (Y)**:
+
+  * Enable **Bake Into Pose**
+  * Set **Based Upon** to `Feet`
+* Click **Apply**
+
+**Run (Front/Back/Left/Right)**
+
+* Apply the **exact same settings** used for Walk animations
 
 ---
 
 ### Step 6: Blend Trees
 
-* Create two Blend Trees:
-
-  * `Walk`
-  * `Run`
+* In the **Animator** window, right click inside the **Base Layer**
+* Select `Create State` → `From New Blend Tree`
+* Rename the state to `Walk`
+* Repeat the same process and rename the second one to `Run`
 
 **Animator Parameters**
 
+Select the **Parameters** tab, click `+`, and create:
+
 * `float forward`
 * `float strafe`
-* `bool sprint` (default false)
+* `bool sprint` (set default value to false)
 
 **Walk Blend Tree**
 
-* Type: 2D Simple Directional
-* Parameters: `strafe`, `forward`
-* Motions:
+* Double click `Walk`
+* Select the **Blend Tree**
+* In the Inspector:
+
+  * Set **Blend Type** to `2D Simple Directional`
+  * Set **Parameters** to `strafe` (X) and `forward` (Y)
+* Under **Motion**, click `+` → `Add Motion Field` five times and assign:
 
   * Idle (0,0)
   * Walk Forward (0,1)
@@ -219,19 +247,19 @@ Player
   * Walk Left (-1,0)
   * Walk Right (1,0)
 
-**Repeat same setup for Run**
+**Repeat the same configuration for the Run blend tree**
 
 ---
 
 ### Step 7: Transitions
 
-* Walk → Run:
+* Right click on `Walk` then select `Make Transition` then select `Run`. Now select transition line from `Walk` → `Run`
 
-  * Has Exit Time ❌
-  * Condition: `sprint == true`
-* Run → Walk:
+  * Disable **Has Exit Time**
+  * Under `Conditions` select `sprint == true`
+* Create a transition from `Run` → `Walk`
 
-  * Condition: `sprint == false`
+  * Disable **Has Exit Time** and add condition: `sprint == false`
 
 ⚠️ **Do not rename parameters** (`forward`, `strafe`, `sprint`)
 
@@ -243,30 +271,36 @@ Player
 
 ### Step 1: Script Setup
 
-Create folders:
+Create the following folder structure:
 
 ```plaintext
-Scripts
-├── Camera
-└── Character
-    ├── InputSystem.cs
-    └── Movement.cs
+Assets
+└── Assets(Longbow)
+├── Scripts
+│	├── Camera
+│	└── Character
+│		├── InputSystem.cs
+│		└── Movement.cs
+└── UI(to be added)
 ```
 
-* Copy `Movement.cs` from provided assets
+
+* Copy `Movement.cs` from the provided folder `Assets/Scripts/Camera/` and paste its contents into your `Movement.cs`
 
 ---
 
 ### Step 2: Character Controller
 
-* Select `Player`
-* Add `Character.cs`
-* Adjust Character Controller:
+* Select `Player` in the Hierarchy
+* Drag and drop `Character.cs` onto it
+* A **Character Controller** component will be added automatically
+* Adjust:
 
-  * Center
-  * Radius
-  * Height
-    to fit model capsule
+  * **Center**
+  * **Radius**
+  * **Height**
+
+  so the green capsule correctly surrounds the character model
 
 ---
 
@@ -274,28 +308,39 @@ Scripts
 
 * Copy `InputSystem.cs` from:
   `Assets/Scripts/InputSystem/1 just player input/`
-* Attach to `Player`
+* Attach `InputSystem.cs` to `Player`
 
 **Input Manager**
 
-* Edit → Project Settings → Input Manager
-* Increase Axes size by 1
-* Add:
+* Go to `Edit` → `Project Settings` → `Input Manager`
+
+* Select **Axes** and increase **Size** by 1
+
+* Edit the new axis and set:
 
   * Name: `Sprint`
   * Positive Button: `left shift`
   * Alt Negative Button: `right shift`
 
+* Temporarily move the **Main Camera** under `Player` and press Play
+
+* Verify that movement input works
+
+* If confirmed, move the camera back to its original place
+
 ---
 
 ### Step 4: Camera Hierarchy
 
-* Create empty `CameraHolder` at (0,0,0)
-* Under it create empty `Center`
-* Position Center at character hip
-* Move `Main Camera` under `Center`
+* Create an empty GameObject named `CameraHolder`
+* Reset its position to `(0,0,0)`
+* Right click `CameraHolder` → `Create Empty` → rename to `Center`
+* Position `Center` roughly at the hip level of the character
+* Drag `Main Camera` under `Center` and adjust position as desired
 
 ```plaintext
+ENV
+Player
 CameraHolder
 └── Center
     ├── Main Camera
@@ -306,39 +351,45 @@ CameraHolder
 
 ### Step 5: Camera Controller
 
-* Create `CameraController.cs` in `Scripts/Camera`
-* Copy from:
-  `Assets/Scripts/Camera/1 just camera and player/`
-* Attach to `CameraHolder`
+* Inside `Assets/Scripts/Camera`, create `CameraController.cs`
+* Copy contents from:
+  `Assets/Scripts/Camera/1 just camera and player/CameraController.cs`
+* Attach this script to `CameraHolder`
 
 ---
 
 ### Step 6: Tagging
 
 * Select `Player`
-* Set Tag → `Player`
-* Play and observe camera collision issue
+* Set **Tag** to `Player`
+* Press Play and observe that camera collision issues still exist
 
 ---
 
 ### Step 7: Camera Collision Fix
 
-* Replace `CameraController.cs` with:
+* Replace the contents of `CameraController.cs` with:
   `Assets/Scripts/Camera/1 collision/CameraController.cs`
 
 **CamPosition Setup**
 
-* Create empty `CamPosition` under `Center`
-* Copy **Transform component** from Main Camera
-* Paste into CamPosition
+* Right click `CameraHolder/Center` → `Create Empty` → rename to `CamPosition`
+* Select **Main Camera**
+
+  * Click the **three dots** in Transform → `Copy Component`
+* Select **CamPosition**
+
+  * Click the **three dots** → `Paste Component Values`
 
 **Camera**
 
-* Adjust Clipping Planes as needed
+* Select **Main Camera**
+* Adjust **Clipping Plane** values as needed
 
 ✅ Camera collision is now resolved
 
 ---
+
 
 ### Phase 3: Weapon System Creation
 
