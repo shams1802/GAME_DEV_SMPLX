@@ -46,20 +46,37 @@ Implements a third-person bow and arrow system with:
 ## Project Structure
 ```plaintext
 Assets
-└── Assets
-│ 	└── Longbow
-│ 	    	├── Animator
-│ 	    	├── Materials
-│ 		    ├── Textures
-│ 		    └── (erika_archer.fbx and animations)
+├── Assets
+│   └── Longbow
+│       ├── Animator
+│       ├── Materials
+│       ├── Textures
+│       └── (erika_archer.fbx and 39 other fbx)
 ├── Scripts
-│	├── Camera
-│	│	    └── CameraController.cs
-│	└── Character
-│		    ├── InputSystem.cs
-│		    └── Movement.cs
-└── UI
+│   ├── Camera
+│   │   └── CameraController.cs
+│   └── Character
+│       ├── InputSystem.cs
+│       └── Movement.cs
+└── UI(to be added)
 ```
+
+```plaintext
+ENV
+├── Plane
+├── Cube1
+├── Cube2
+├── Cube3
+└── Cube4
+Player
+└── erika_archer
+CameraHolder
+└── Center
+    ├── Main Camera
+    └── CamPosition
+```
+
+
 
 ---
 
@@ -95,15 +112,17 @@ Assets
 
 ```plaintext
 Assets
-└── Assets
-    └── Longbow
-        ├── Animator
-        ├── Materials
-        ├── Textures
-        └── (erika_archer.fbx + 39 animation fbx files)
-Scripts (to be added)
-UI (to be added)
-````
+├── Assets
+│   └── Longbow
+│       ├── Animator
+│       ├── Materials
+│       ├── Textures
+│       └── (erika_archer.fbx and 39 other fbx)
+├── Scripts(to be added)
+└── UI(to be added)
+```
+
+* Empty folders `Animator`, `Materials`and `Textures` from `Assets/Assets/Longbow`, if anything in it is present
 
 * Drag `erika_archer.fbx` from `Assets/Assets/Longbow` into the **Hierarchy**
 
@@ -275,12 +294,12 @@ Create the following folder structure:
 
 ```plaintext
 Assets
-└── Assets(Longbow)
+├── Assets(Longbow)
 ├── Scripts
-│	├── Camera
-│	└── Character
-│		├── InputSystem.cs
-│		└── Movement.cs
+│   ├── Camera
+│   └── Character
+│       ├── InputSystem.cs
+│       └── Movement.cs
 └── UI(to be added)
 ```
 
