@@ -250,7 +250,7 @@ Then in the Project window under `Assets/Assets/Longbow`, locate:
 * Rename the state to `Walk`
 * Repeat the same process and rename the second one to `Run`
 
-![Animator Parameters and Blend Trees Setup](Images%20of%20Setting/PHASE%201%2CSTEP%206.png)
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%201,%20STEP%206.png)
 
 **Animator Parameters**
 
@@ -338,6 +338,8 @@ Assets
 * Copy `InputSystem.cs` from:
   `Assets/Scripts/InputSystem/1 just player input/`
 * Attach `InputSystem.cs` to `Player`
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%202,%20STEP%203.png)
 
 **Input Manager**
 
