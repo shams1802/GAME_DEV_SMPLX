@@ -47,6 +47,13 @@ Implements a third-person bow and arrow system with:
 ```plaintext
 Assets
 ├── Assets
+│   ├── Free medieval weapons
+│   │   ├── Materials
+│   │   ├── Models
+│   │   ├── Prefabs
+│   │   ├── Scenes
+│   │   ├── Textures
+│   │   └── README.md
 │   └── Longbow
 │       ├── Animator
 │       ├── Materials
@@ -54,12 +61,12 @@ Assets
 │       └── (erika_archer.fbx and 39 other fbx)
 ├── Scripts
 │   ├── Camera
-│   │   └── CameraController.cs
-│   └── Character
+│   └── Character	
 │       ├── InputSystem.cs
 │       └── Movement.cs
 └── UI(to be added)
 ```
+
 
 ```plaintext
 ENV
@@ -107,6 +114,7 @@ CameraHolder
 
 ### Step 1: Import Character Assets
 
+* Create a `3D universe` `Project` in `Unity Hub`
 * Download **Erica Archer** from [mixamo](https://www.mixamo.com/#/) or use the already provided `Longbow` folder
 * Create the following folder structure :
 
