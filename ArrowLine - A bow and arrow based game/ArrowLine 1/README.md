@@ -149,7 +149,7 @@ Assets
 
 * For **every animation FBX file** inside `Assets/Assets/Longbow`:
 
-  * Select the animation file
+  * Select all the animation file using shift key
   * Go to **Rig Tab**
   * Set **Animation Type** to `Humanoid`
   * Set **Avatar Definition** to `Copy From Other Avatar`
@@ -249,6 +249,8 @@ Then in the Project window under `Assets/Assets/Longbow`, locate:
 * Select `Create State` → `From New Blend Tree`
 * Rename the state to `Walk`
 * Repeat the same process and rename the second one to `Run`
+
+![Animator Parameters and Blend Trees Setup](Images%20of%20Setting/PHASE%201%2CSTEP%206.png)
 
 **Animator Parameters**
 
@@ -355,6 +357,13 @@ Assets
 
 * If confirmed, move the camera back to its original place
 
+⚠️ **Input System package mismatch** 
+
+* If error like **InvalidOperationExecution** or **InputMismatch** persists
+
+* Go to `Edit` → `Prject Settings`, select `Player`
+* Scroll to `Other Settings`, then find `Active Input Handling` and set it to `Both`
+
 ---
 
 ### Step 4: Camera Hierarchy
@@ -382,6 +391,8 @@ CameraHolder
 * Copy contents from:
   `Assets/Scripts/Camera/1 just camera and player/CameraController.cs`
 * Attach this script to `CameraHolder`
+* Go to `Assets/Scripts/InputSystem`, replace `InputSystem.cs` from provided folder:
+  `Assets/Scripts/InputSystem/2 with camera/`
 
 ---
 
@@ -408,10 +419,15 @@ CameraHolder
 
   * Click the **three dots** → `Paste Component Values`
 
+**CameraHolder Setup**
+
+* In **CameraHolder**'s **Inspector** tab, under **Camera Controller (Script)** component, drag `CamPosition` from `CameraHolder/Center/` to `Cam Position` slot
+
+* In `Cam Collision Layers` select `Default`
+
 **Camera**
 
-* Select **Main Camera**
-* Adjust **Clipping Plane** values as needed
+* Select **Main Camera**, in **Inspector** tab, under **Camera** component, adjust **Clipping Plane** values as needed
 
 ✅ Camera collision is now resolved
 
