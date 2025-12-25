@@ -59,6 +59,8 @@ Assets
 │       ├── Materials
 │       ├── Textures
 │       └── (erika_archer.fbx and 39 other fbx)
+├── Prefabs
+│   └── CrossHair
 ├── Scripts
 │   ├── Camera
 │   │   └── CameraController.cs
@@ -68,7 +70,8 @@ Assets
 │   └── Weapon	
 │       ├── Arrow.cs
 │       └── Bow.cs
-└── UI(to be added)
+└── UI
+    └── arrow-crosshair 1
 ```
 
 ```plaintext
@@ -217,7 +220,7 @@ CameraHolder
 
 ---
 
-### Step 1: Import Character Assets
+### Step 1.1: Import Character Assets
 
 * Create a `3D universe` `Project` in `Unity Hub`
 * Download **Erica Archer** from [mixamo](https://www.mixamo.com/#/) or use the already provided `Longbow` folder
@@ -231,6 +234,7 @@ Assets
 │       ├── Materials
 │       ├── Textures
 │       └── (erika_archer.fbx and 39 other fbx)
+├── Prefabs(to be added)
 ├── Scripts(to be added)
 └── UI(to be added)
 ```
@@ -263,8 +267,7 @@ Assets
 
 ---
 
-### Step 2: Environment Setup
-
+### Step 1.2: Environment Setup
 * In the **Hierarchy** window, right click → `Create Empty` and rename it to `ENV`
 * Select `ENV`, then right click → `3D Object` → `Plane` (this will be the ground)
 * Select `ENV` again, then right click → `3D Object` → `Cube`
@@ -273,7 +276,7 @@ Assets
 
 ---
 
-### Step 3: Player Hierarchy
+### Step 1.3: Player Hierarchy
 
 * In the **Hierarchy**, right click → `Create Empty` and rename it to `Player`
 * Select `Player`, then in the **Inspector**, open the Transform component
@@ -293,7 +296,7 @@ Player
 
 ---
 
-### Step 4: Animator Controller
+### Step 1.4: Animator Controller
 
 * Navigate to `Assets/Assets/Longbow/Animator` in the Project window
 
@@ -309,7 +312,7 @@ Player
 
 ---
 
-### Step 5: Animation Configuration
+### Step 1.5: Animation Configuration
 
 Select `Window` → `Animation` → `Animator` to open the Animator window
 
@@ -348,7 +351,7 @@ Then in the Project window under `Assets/Assets/Longbow`, locate:
 
 ---
 
-### Step 6: Blend Trees
+### Step 1.6: Blend Trees
 
 * In the **Animator** window, right click inside the **Base Layer**
 * Select `Create State` → `From New Blend Tree`
@@ -387,7 +390,7 @@ Select the **Parameters** tab, click `+`, and create:
 
 ---
 
-### Step 7: Transitions
+### Step 1.7: Transitions
 
 * Right click on `Walk` then select `Make Transition` then select `Run`. Now select transition line from `Walk` → `Run`
 
@@ -405,13 +408,14 @@ Select the **Parameters** tab, click `+`, and create:
 
 ---
 
-### Step 1: Script Setup
+### Step 2.1: Script Setup
 
 Create the following folder structure:
 
 ```plaintext
 Assets
 ├── Assets(Longbow)
+├── Prefabs(to be added)
 ├── Scripts
 │   ├── Camera
 │   └── Character
@@ -425,7 +429,7 @@ Assets
 
 ---
 
-### Step 2: Character Controller
+### Step 2.2: Character Controller
 
 * Select `Player` in the Hierarchy
 * Drag and drop `Character.cs` onto it
@@ -440,7 +444,7 @@ Assets
 
 ---
 
-### Step 3: Input System
+### Step 2.3: Input System
 
 * Copy `InputSystem.cs` from:
   `Assets/Scripts/Character/InputSystem/1 Player Input/`
@@ -475,7 +479,7 @@ Assets
 
 ---
 
-### Step 4: Camera Hierarchy
+### Step 2.4: Camera Hierarchy
 
 * Create an empty GameObject named `CameraHolder`
 * Reset its position to `(0,0,0)`
@@ -494,18 +498,18 @@ CameraHolder
 
 ---
 
-### Step 5: Camera Controller
+### Step 2.5: Camera Controller
 
 * Inside `Assets/Scripts/Camera`, create `CameraController.cs`
 * Copy contents from:
-  `Assets/Scripts/Camera/1 Camera and Player Integration/CameraController.cs`
+  `Assets/Scripts/Camera/CameraController/1 Camera and Player Integration/CameraController.cs`
 * Attach this script to `CameraHolder`
 * Go to `Assets/Scripts/InputSystem`, replace `InputSystem.cs` from provided folder:
   `Assets/Scripts/Character/InputSystem/2 Camera Integration/`
 
 ---
 
-### Step 6: Tagging
+### Step 2.6: Tagging
 
 * Select `Player`
 * Set **Tag** to `Player`
@@ -513,10 +517,10 @@ CameraHolder
 
 ---
 
-### Step 7: Camera Collision Fix
+### Step 2.7: Camera Collision Fix
 
 * Replace the contents of `CameraController.cs` with:
-  `Assets/Scripts/Camera/2 Collision Avoidance/CameraController.cs`
+  `Assets/Scripts/Camera/CameraController/2 Collision Avoidance/CameraController.cs`
 
 **CamPosition Setup**
 
@@ -545,7 +549,7 @@ CameraHolder
 
 ---
 
-### STEP 1: Import Weapon Assets
+### Step 3.1: Import Weapon Assets
 
 * Add weapon assets **Free medieval weapons** into `Assets/Assets`
 * You can either:
@@ -572,9 +576,10 @@ Assets
 
 ---
 
-### STEP 2: Animator Parameters and Bow Animations Setup
+### Step 3.2: Animator Parameters and Bow Animations Setup
 
-* Go to **Animator** window, under **Parameters** tab, create three new bools name them `aim`, `fire` and `pullString` (default false)
+* Go to **Animator** window, under **Parameters** tab, create a new trigger named `fire` (deactive)
+* Also create two new bools name them `aim` and `pullString` (default false)
 
 * Navigate to `Assets/Assets/Longbow` and locate the following animation files:
 
@@ -615,13 +620,13 @@ Assets
 
 ---
 
-### STEP 3: Upper Body Avatar Mask and Animator Layer
+### Step 3.3: Upper Body Avatar Mask and Animator Layer
 
-* Navigate to `Assets/Assets/Longbow/Animator`, right click → `Create` → `Avatar Mask` and rename it to `UpperBody`
+* Navigate to `Assets/Assets/Longbow/Animator`, right click → `Create` → `Animation` → `Avatar Mask` and rename it to `UpperBody`
 
 * Select `UpperBody`, in the **Inspector** tab, under **Humanoid**, disable `Lower Body`
 
-![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/untitled.png)
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%203,%20STEP%203.png)
 
 * Open **Animator**, under **Layers** tab
 * Click the `+` button and rename it to `UpperBody` and click the **gear icon**
@@ -631,7 +636,7 @@ Assets
 
 ---
 
-### STEP 4: Upper Body Arrow Logic State Machine
+### Step 3.4: Upper Body Arrow Logic State Machine
 
 * In the **Project window**, go to `Assets/Assets/Longbow`
 
@@ -658,11 +663,10 @@ Assets
 | :--- | :--- | :---: | :--- |
 | **Empty** | **Draw Arrow** | No | `aim == true` |
 | **Draw Arrow** | **Pull String** | No | `pullString == true` |
-| **Pull String** | **Fire Arrow** | No | `fire == true` |
+| **Pull String** | **Fire Arrow** | No | `fire == active` |
 | **Fire Arrow** | **Draw Arrow** | **Yes** | `aim == true` |
 | **Any State** | **Empty** | No | `aim == false` |
 
-![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/untitled.png)
 
 * Right click inside **UpperBody** area
 * Select `Create Sub-State Machine` and rename it to `Arrow Logic`
@@ -671,7 +675,7 @@ Assets
 
 ---
 
-### STEP 5: Aim Movement Blend Tree
+### Step 3.5: Aim Movement Blend Tree
 
 * Switch to **Base Layer**, duplicate `Run` and rename it to `Aim Move`
 
@@ -683,9 +687,9 @@ Assets
   * Aim Walk Left (-1,0)
   * Aim Walk Right (1,0)
 
----
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%203,%20STEP%205.png)
 
-#### Transitions
+**Transitions**
 
 | From | To | Has Exit Time | Conditions |
 | :--- | :--- | :---: | :--- |
@@ -696,21 +700,24 @@ Assets
 
 ---
 
-### STEP 6: Bow Model Attachment
+### Step 3.6: Bow Model Attachment
 
 * Go to `Assets/Assets/Free medieval weapons/Models`, select `Wooden Bow.fbx` and drag it to **LeftHand** (`Player/erika_archer/Hips/Spine/Spine1/Spine2/LeftShoulder/LeftArm/LeftForeArm/LeftHand`)
 
-* Adjust **Position / Rotation** so the bow sits naturally in the left hand
+* Adjust **Position / Rotation** so the bow sits naturally in the left hand **(use Rotation → X = 90, Y = 180, Z = 0)**
 
-![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/untitled.png)
+* Add textures to `Wooden Bow` from `Wooden Bow_1_Wooden Bow_1_AlbedoTransparency` in `Assets/Assets/Free medieval weapons/Textures`
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%203,%20STEP%206.png)
 
 ---
 
-### STEP 7: Bow Script and Input Replacement
+### Step 3.7: Bow Script and Input Replacement
 
 * In `Assets/Scripts`, create a folder named `Weapon`
 * Inside it, create `Bow.cs` and copy contents from:
   `Assets/Scripts/Weapon/Bow/1 Bow Unlit`
+* Attach `Bow.cs` to `Wooden Bow` in (`Player` → `LeftHand`)
 
 * Navigate to `Assets/Scripts/Character` and replace `InputSystem.cs` entire contents with:
   `Assets/Scripts/Character/InputSystem/3 Bow Equipment`
@@ -721,11 +728,23 @@ Assets
 
 If animations and bow behavior respond, Phase 3 is complete.
 
-### Phase 4: Core Combat Scripting
+⚠️ **Zoom too hard** 
+
+* If Camera Zoom too much on mouse right click
+
+* Go to `CameraHolder`, under `Camera Controller` (Script), change `Camera Move Settings`
+* Especially change `Zoom Field of View` and `Zoom Speed`
+
+---
+
+## Phase 4: Core Combat Scripting
+
+---
 
 This phase implements the fundamental C# scripts that control bow drawing, arrow spawning, and basic firing mechanics.
 
-#### Step 4.1: Create BowController Script
+
+### Step 4.1: Create BowController Script
 
 **Generate Script File**
 1. In Project window, navigate to Assets/Scripts/Weapon/
