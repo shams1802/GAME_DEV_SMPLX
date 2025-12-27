@@ -41,8 +41,8 @@ public class Bow : MonoBehaviour
 
     // Rigidbody currentArrow;
 
-    bool canPullString = false;
-    bool canFireArrow = false;
+    // bool canPullString = false;
+    // bool canFireArrow = false;
 
     // AudioSource bowAudio;
     

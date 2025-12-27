@@ -9,7 +9,8 @@ public class Bow : MonoBehaviour
     {
         [Header("Arrow Settings")]
         public float arrowCount;
-        public Rigidbody arrowPrefab;
+        // public Rigidbody arrowPrefab;
+        public GameObject arrowPrefab;
         public Transform arrowPos;
         public Transform arrowEquipParent;
         // public float arrowForce = 3;
@@ -42,8 +43,8 @@ public class Bow : MonoBehaviour
     // Rigidbody currentArrow;
     GameObject currentArrow;
 
-    bool canPullString = false;
-    bool canFireArrow = false;
+    //bool canPullString = false;
+    //bool canFireArrow = false;
 
     // AudioSource bowAudio;
     

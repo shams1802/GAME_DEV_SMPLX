@@ -78,8 +78,8 @@ public class InputSystem : MonoBehaviour
         if (testAim)
             isAiming = true;
 
-        if (bowScript.bowSettings.arrowCount < 1)
-                isAiming = false;
+        //if (bowScript.bowSettings.arrowCount < 1)
+        //        isAiming = false;
 
         moveScript.AnimateCharacter(Input.GetAxis(input.forwardInput), Input.GetAxis(input.strafeInput));
         moveScript.SprintCharacter(Input.GetButton(input.sprintInput));

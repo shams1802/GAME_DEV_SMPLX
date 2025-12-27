@@ -14,7 +14,7 @@ A Unity project for a third-person bow and arrow combat system with realistic ai
   - [Phase 1: Project Foundation Setup](#phase-1-project-foundation-setup)
   - [Phase 2: Character Movement and Camera Control](#phase-2-character-movement-and-camera-control)
   - [Phase 3: Combat Stance and Animation Rigging](#phase-3-combat-stance-and-animation-rigging)
-  - [Phase 4: Core Combat Scripting](#phase-4-core-combat-scripting)
+  - [Phase 4: Advanced Aiming Mechanics](#phase-4-advanced-aiming-mechanics)
   - [Phase 5: Advanced Aiming Mechanics](#phase-5-advanced-aiming-mechanics)
   - [Phase 6: Equipment Management System](#phase-6-equipment-management-system)
   - [Phase 7: Audio and Ammunition System](#phase-7-audio-and-ammunition-system)
@@ -574,6 +574,21 @@ Assets
 └── UI (to be added)
 ````
 
+* Go to `Assets/Assets/Free medieval weapons/Materials`, check if texture is added
+* If not, click on each individual, select respective Map from `/Textures`
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%203,%20STEP%201%201.png)
+
+* Go to `Assets/Assets/Free medieval weapons/Models`, check if materials are visible
+* If not, click on each individually, select respective `On Demand Remap` from `/Materials`
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%203,%20STEP%201%202.png)
+
+* Go to `Assets/Assets/Free medieval weapons/Prefabs`, check if mess and materials are visible
+* If not, double click on each individually, select respective `Mesh` and `Materials`
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%203,%20STEP%201%203.png)
+
 ---
 
 ### Step 3.2: Animator Parameters and Bow Animations Setup
@@ -737,228 +752,200 @@ If animations and bow behavior respond, Phase 3 is complete.
 
 ---
 
-## Phase 4: Core Combat Scripting
+## Phase 4: Advanced Aiming Mechanics
 
 ---
 
-This phase implements the fundamental C# scripts that control bow drawing, arrow spawning, and basic firing mechanics.
+### Step 4.1: Crosshair UI Setup
 
+* Go to `Assets/Scripts/Character`, replace `InputSystem.cs` content with provided folder
+  `Assets/Scripts/Character/InputSystem/4 Aiming Control`
 
-### Step 4.1: Create BowController Script
+* Right click in **Hierarchy** → `UI` → `Canvas`, right click on `Canvas` → `UI` → `Image`
 
-**Generate Script File**
-1. In Project window, navigate to Assets/Scripts/Weapon/
-2. Right-click → Create → C# Script
-3. Name it "Bow" (matching best practices)
-4. Double-click to open in your code editor
+* Create folder `Assets/UI`, from provided folder, add image `arrow-crosshair 1` (or your own)
 
-**Implement Basic Bow Logic**
-```csharp
-using UnityEngine;
-
-public class Bow : MonoBehaviour
-{
-    [Header("Arrow Settings")]
-    public GameObject arrowPrefab;
-    public Transform arrowSpawnPoint;
-    public float arrowSpeed = 50f;
-    
-    [Header("Bow Settings")]
-    public float maxDrawTime = 2f;
-    public float maxDrawPower = 100f;
-    
-    private float currentDrawTime = 0f;
-    private bool isDrawing = false;
-    private GameObject drawnArrow;
-    
-    void Update()
-    {
-        HandleBowInput();
-    }
-    
-    void HandleBowInput()
-    {
-        // Start drawing bow
-        if (Input.GetButtonDown("Fire1"))
-        {
-            StartDrawing();
-        }
-        
-        // Continue drawing
-        if (Input.GetButton("Fire1") && isDrawing)
-        {
-            ContinueDrawing();
-        }
-        
-        // Release arrow
-        if (Input.GetButtonUp("Fire1") && isDrawing)
-        {
-            ReleaseArrow();
-        }
-    }
-    
-    void StartDrawing()
-    {
-        isDrawing = true;
-        currentDrawTime = 0f;
-        
-        // Instantiate arrow at spawn point but don't fire yet
-        drawnArrow = Instantiate(arrowPrefab, arrowSpawnPoint.position, arrowSpawnPoint.rotation);
-        drawnArrow.transform.SetParent(arrowSpawnPoint);
-        
-        // Disable arrow physics while drawing
-        Rigidbody arrowRb = drawnArrow.GetComponent<Rigidbody>();
-        if (arrowRb != null)
-        {
-            arrowRb.isKinematic = true;
-        }
-    }
-    
-    void ContinueDrawing()
-    {
-        // Increase draw time up to maximum
-        currentDrawTime += Time.deltaTime;
-        currentDrawTime = Mathf.Clamp(currentDrawTime, 0f, maxDrawTime);
-        
-        // Visual feedback: pull arrow back along bowstring
-        float drawProgress = currentDrawTime / maxDrawTime;
-        // Implement bowstring visual deformation here if needed
-    }
-    
-    void ReleaseArrow()
-    {
-        if (drawnArrow == null) return;
-        
-        isDrawing = false;
-        
-        // Calculate shot power based on draw time
-        float shotPower = (currentDrawTime / maxDrawTime) * maxDrawPower;
-        
-        // Detach arrow from bow
-        drawnArrow.transform.SetParent(null);
-        
-        // Enable physics
-        Rigidbody arrowRb = drawnArrow.GetComponent<Rigidbody>();
-        if (arrowRb != null)
-        {
-            arrowRb.isKinematic = false;
-            
-            // Apply force in forward direction
-            Vector3 shootDirection = arrowSpawnPoint.forward;
-            arrowRb.AddForce(shootDirection * shotPower * arrowSpeed, ForceMode.Impulse);
-        }
-        
-        // Reset draw state
-        drawnArrow = null;
-        currentDrawTime = 0f;
-    }
-}
+```plaintext
+Assets
+├── Assets
+├── Prefabs (to be added)
+│   └── CrossHair (to be added)
+├── Scripts
+└── UI
+    └── arrow-crosshair 1
 ```
 
-#### Step 4.2: Create Arrow Script
+* Select `arrow-crosshair 1`, set `Texture Type` → `Sprite (2D and UI)` and `Sprite Mode` → `Single` then click `Apply`
 
-**Generate Arrow Script**
-1. In Assets/Scripts/Weapon/, create new C# Script
-2. Name it "Arrow"
-3. Open in code editor
+* Select `Canvas/Image`, in `Image` component, drag `arrow-crosshair 1` to `Source Image`
 
-**Implement Arrow Behavior**
-```csharp
-using UnityEngine;
+---
 
-public class Arrow : MonoBehaviour
-{
-    [Header("Arrow Settings")]
-    public float lifetime = 10f;
-    public int damage = 25;
-    public bool stickToSurfaces = true;
-    
-    private bool hasHit = false;
-    private Rigidbody rb;
-    
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-        
-        // Auto-destroy arrow after lifetime expires
-        Destroy(gameObject, lifetime);
-    }
-    
-    void FixedUpdate()
-    {
-        if (!hasHit && rb != null && rb.velocity.magnitude > 0.1f)
-        {
-            // Rotate arrow to face direction of travel
-            transform.rotation = Quaternion.LookRotation(rb.velocity);
-        }
-    }
-    
-    void OnCollisionEnter(Collision collision)
-    {
-        if (hasHit) return;
-        
-        hasHit = true;
-        
-        // Stop arrow physics
-        if (rb != null)
-        {
-            rb.isKinematic = true;
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-        
-        if (stickToSurfaces)
-        {
-            // Parent arrow to the object it hit
-            transform.SetParent(collision.transform);
-        }
-        
-        // Apply damage if object has health component
-        // Example: collision.gameObject.GetComponent<Health>()?.TakeDamage(damage);
-        
-        // Play impact sound
-        // AudioSource.PlayClipAtPoint(impactSound, transform.position);
-    }
-}
-```
+### Step 4.2: World Space Crosshair
 
-#### Step 4.3: Attach Scripts to GameObjects
+* Select `Canvas`
 
-**Configure Bow Script**
-1. In Hierarchy, select the Bow GameObject on your character
-2. In Inspector, click "Add Component"
-3. Search for "Bow" and add the script
-4. Configure public fields:
-   - Arrow Prefab: Drag ArrowPrefab from Project window
-   - Arrow Spawn Point: Drag the ArrowSpawnPoint child object from Hierarchy
-   - Arrow Speed: 50
-   - Max Draw Time: 2
-   - Max Draw Power: 100
+  * `Render Mode` → `World Space`
+  * `Rect Transform` → Pos X/Y/Z = `0`
+  * Set `Width = 10`, `Height = 1` (adjust if needed)
+  * Adjust scale if needed
 
-**Configure Arrow Prefab Script**
-1. Double-click ArrowPrefab in Project window
-2. Select the root Arrow GameObject in Prefab mode
-3. Add the "Arrow" component
-4. Configure settings:
-   - Lifetime: 10
-   - Damage: 25
-   - Stick To Surfaces: Checked
+* Select `Image`, `Rect Transform` → `Stretch / Stretch` 
 
-**Test Basic Firing**
-1. Enter Play Mode
-2. Press and hold left mouse button (Fire1)
-3. Release to fire arrow
-4. Observe arrow trajectory and physics
-5. Verify arrow sticks to surfaces on impact
-6. Exit Play Mode
+* Select `Canvas`, adjust scale and position if needed
 
-This completes the core combat scripting foundation, enabling basic bow and arrow functionality.
+⚠️ Dont change position and scale of `Image`
 
-### Phase 5: Advanced Aiming Mechanics
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%204,%20STEP%202.png)
 
-This phase implements sophisticated aiming systems including character rotation, spine adjustment, and dynamic targeting.
+* Create folder `Assets/Prefabs`
 
-#### Step 5.1: Implement Camera-Based Aiming
+* Rename `Canvas` → `CrossHair`, and drag `CrossHair` into `Assets/Prefabs`
+
+* Delete `CrossHair` and `EventSystem` from `Hierarchy`
+
+* Go to `Player → LeftHand → Wooden bow`
+
+  * In `Bow (Script)` component, drag `CrossHair` prefab to `Cross Hair Prefab`
+
+---
+
+### Step 4.3: Aim Configuration
+
+* Select `Player`, in `Input System (Script)`:
+  * `Bow Script` → `Wooden bow` (Player -> LeftHand)
+  * `Spine` → `Spine` (Player/erika_archer/Hips)
+  * `Aim Layer` → `Default`
+
+* Play and verify aim direction
+
+  * If incorrect:
+
+    * Enable `Test Aim`
+    * Adjust `Spine Offset`
+    * Copy Component → Paste Component Values (after Play mode)
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%204,%20STEP%203.png)
+
+⚠️ **Zoom too hard** - Go to `CameraHolder`, in `Camera Controller` adjust `Zoom Field of View` and `Zoom Speed`
+
+* Adjust `Main Camera` position slightly left
+
+* Apply same values to `CameraHolder/Center/CamPosition`
+
+* Verify aiming and disable `Test Aim`
+
+---
+
+### Step 4.4: UI Camera Setup
+
+* Right click on `Main Camera` under `CameraHolder/Center`
+
+* Select `Camera` then rename to `UIcamera`
+
+  * `Culling Mask` → `UI`
+  * `Clear Flags` → `Depth Only`
+  * Disable `Audio Listener`
+
+* Select `Main Camera`
+
+  * `Culling Mask` → Everything except `UI`
+
+* Replace scripts:
+
+  * `CameraController.cs` → `Assets/Scripts/Camera/CameraController/3 UI CrossHair Updation`
+  * `InputSystem.cs` → `Assets/Scripts/Character/InputSystem/5 UI CrossHair Updation`
+
+* Play and verify UI crosshair
+
+⚠️ **If `Clear Flags` not found**
+* Select `Main Camera`, `Render Type` → `Base` and `Background Type` → `Skybox`
+* Select `UICamera`, `Render Type` → `Base`
+* Select `Main Camera`, go to `Stack` then add `UICamera`
+---
+
+### Step 4.5: Bow String Logic
+
+* Replace scripts:
+
+  * `Bow.cs` → `Assets/Scripts/Weapon/Bow/2 Bow String Control`
+  * `InputSystem.cs` → `Assets/Scripts/Character/InputSystem/6 Bow String Control`
+
+* Open `Animator`, under `UpperBody` layer → `Arrow Logic`, double click on `Draw Arrow`, under `Animation` tab, find `Events` click `+`
+
+* Add Animation Events on suitable time
+
+  * `Draw Arrow` → `EnableArrow` (when arrow is drawn)
+  * `Draw Arrow` → `Pull` (when start string pull)
+  * `Fire` → `Release` (when arrow shot)
+  * `Fire` → `DisableArrow` (when arrow should disappear)
+
+  ⚠️ Use exact naming
+
+---
+
+### Step 4.6: Arrow & String Setup
+
+* Go to `Assets/Assets/Free medieval weapons/Prefabs`
+
+* Drag `Arrow` to `Player → RightHand`
+
+* Create empty under
+  `Player → LeftHand/Wooden Bow/Wooden Bow_1/WB.main`
+
+  * Name: `InitialStringPos`
+  * Copy position from `WB.String`
+
+* Create empty under `RightHand`
+
+  * Name: `StringHandPullPos`
+  * Copy position from `RightHand`
+
+* Fill `Bow (Script)`:
+
+**Arrow Settings**
+
+* `Arrow Count` = 10
+* `Arrow Prefab` → `Arrow` (Assets\Assets\Free medieval weapons\Prefabs)
+* `Arrow Pos` → `Arrow` (Player → RightHand)
+* `Arrow Equip Parent` → `RightHand` (Player → RightForeArm)
+
+**Bow String Settings**
+
+* `Bow String` → `WB.string` (Player → LeftHand/Wooden Bow/Wooden Bow_1/WB.main)
+* `String Initial Pos` → `InitialStringPos` (Player → WB.main)
+* `String Hand Pull Pos` → `StringHandPullPos` (Player → RightHand)
+* `String Initial Parent` → `WB.main` (Player → Wooden Bow_1)
+
+---
+
+### Step 4.7: Final Alignment
+
+* Select `Arrow`
+
+  * Adjust position & rotation (try `Z = -90`)
+
+* Adjust `Wooden Bow` if required
+
+- Select `StringHandPullPos` and enable its **Gizmo** from the icon (triangle next to the cube) in the **Inspector**.
+- Reposition it to control how far the bowstring is pulled.
+- If the gizmo is hard to see, open **Gizmos** (top of Scene view) and increase the **3D Icons** slider.
+
+
+* Ensure:
+
+  * `WB.String` and `InitialStringPos` have same values
+  * Visually verify position of Bow and Arrow in `Game View` (use Copy Paste where ever needed)
+
+![Animator Parameters and Blend Trees Setup](./Images%20of%20Setting/PHASE%204,%20STEP%207.png)
+
+---
+
+## Phase 5: //
+
+---
+
+### Step 5.1: Implement Camera-Based Aiming
 
 **Create AimController Script**
 1. Create new script: Assets/Scripts/Weapon/AimController.cs
