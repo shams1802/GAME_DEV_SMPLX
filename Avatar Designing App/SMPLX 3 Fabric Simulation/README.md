@@ -193,8 +193,8 @@ BackGround (new)
 - Use this link for extra tips - https://github.com/shams1802/GAME_DEV/tree/main/Unity/ClothChanger.
 - Keep Alembic export scale at `100` to avoid tiny garments; keep scene scales at (1,1,1).
 - Ensure EventSystem exists so UI clicks register; confirm TextMeshPro is present for labels.
-- If garments fail to follow the rig, re-parent and reset transforms before Play.
 - Use the correct sprites/materials (green/blue) to differentiate Shirt1 vs. Shirt2 visually.
+<!-- - If garments fail to follow the rig, re-parent and reset transforms before Play. -->
 
 ---
 

@@ -26,7 +26,7 @@ A comprehensive Unity-based avatar design and customization system built on SMPL
 
 ## Overview
 
-This Unity project transforms raw SMPL-X GameDev 2 output models into fully functional, customizable avatars with comprehensive control systems. The application provides:
+This Unity project transforms raw SMPL-X models into fully functional, customizable avatars with comprehensive control systems. The application provides:
 
 - **Real-time pose manipulation** through an intuitive UI
 - **Dynamic body shape control** with 10 beta parameters
@@ -54,6 +54,12 @@ The system is designed for character customization menus, avatar editors, resear
 - **T-pose auto-reset** when switching control modes
 
 ---
+
+[![Demo Video](Images/Avatar%20main%20(pos%20and%20cloth).png)](Avatar%20Designing%20App.mp4)
+
+![Img](Images/Avatar%20main%20(shape%20and%20exp).png)
+
+--
 
 ## Project Structure
 
@@ -104,7 +110,7 @@ Avatar Designing App/
 - Blender (optional, for custom garment creation)
 
 **SMPL-X Assets:**
-- SMPL-X GameDev 2 output models
+- SMPL-X models
 - Models must include SMPL-X mesh, skeleton, and blendshapes
 - No retargeting or rig conversion required
 
@@ -114,8 +120,8 @@ Avatar Designing App/
 
 ### Asset Download
 
-📦 **SMPL-X GameDev 2 Models:**  
-[Download from Google Drive](https://drive.google.com/drive/folders/1VGCQE2hc5W3VZN0CM3zILKSPlRSSl6Tv?usp=sharing)
+📦 **SMPL-X Models:**  
+[Download from SMPLX website](https://smpl-x.is.tue.mpg.de/download.php)
 
 ---
 
@@ -131,7 +137,7 @@ The project is divided into four progressive modules, each building upon the pre
 
 **Objective:** Import and prepare SMPL-X models for Unity integration.
 
-This foundational module converts raw SMPL-X GameDev 2 output models into Unity prefabs with the SMPLX component for pose control.
+This foundational module converts raw SMPL-X models into Unity prefabs with the SMPLX component for pose control.
 
 **What You'll Learn:**
 - Importing SMPL-X models into Unity
@@ -140,6 +146,8 @@ This foundational module converts raw SMPL-X GameDev 2 output models into Unity 
 - Setting model types (Male, Female, Neutral)
 
 **Key Deliverable:** Scene-ready SMPL-X prefabs with pose control capability
+
+![Img](Images/SMPLX%200.png)
 
 📂 **[View Detailed Guide →](SMPLX%200/)**
 
@@ -163,6 +171,8 @@ This module provides real-time full-body pose control through an interactive UI 
 - Managing panel visibility with toggle functionality
 
 **Key Deliverable:** Interactive pose control system with preset poses
+
+![Img](Images/SMPLX%201.png)
 
 📂 **[View Detailed Guide →](SMPLX%201%20Rigging%20and%20Pose%20Control/)**
 
@@ -196,6 +206,8 @@ This module creates interactive sliders at runtime for real-time modification of
 - Runtime UI generation and interaction
 
 **Key Deliverable:** Dynamic shape and expression control system with auto-generated UI
+
+![Img](Images/SMPLX%202.png)
 
 📂 **[View Detailed Guide →](SMPLX%202%20Shape%20And%20Facial%20Expression%20Manipulation/)**
 
@@ -256,6 +268,8 @@ BackGround
 
 **Key Deliverable:** Complete clothing system integrated with pose control
 
+![Img](Images/SMPLX%203.png)
+
 📂 **[View Detailed Guide →](SMPLX%203%20Fabric%20Simulation/)**
 
 ---
@@ -303,8 +317,9 @@ When all modules are implemented, you'll have a comprehensive avatar design syst
 - Keep all scene scales at (1,1,1) to prevent drift
 - Ensure EventSystem exists for UI interaction
 - Confirm TextMeshPro is installed for labels
-- Re-parent and reset transforms if garments don't follow rig
 - Use correct sprites/materials (color-coded) to differentiate garments
+<!-- - Re-parent and reset transforms if garments don't follow rig -->
+
 
 ### UI and Layout
 - Always add **Vertical Layout Group** to panels for proper slider stacking
@@ -348,14 +363,14 @@ When all modules are implemented, you'll have a comprehensive avatar design syst
 int index = i;
 ```
 
-### Garments Don't Follow Character
+<!-- ### Garments Don't Follow Character
 
 **Problem:** Clothing doesn't move with rig
 
 **Solution:**
 - Verify garments are parented to character rig
 - Reset transforms before Play
-- Ensure scales are (1,1,1) throughout hierarchy
+- Ensure scales are (1,1,1) throughout hierarchy -->
 
 ### Missing UI Elements or Broken Layout
 
