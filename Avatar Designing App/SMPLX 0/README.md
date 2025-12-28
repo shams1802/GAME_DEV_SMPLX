@@ -1,6 +1,6 @@
 # Unity SMPL-X Avatar Pose App
 
-This Unity project takes raw SMPL-X GameDev 2 output models and turns them into fully usable Unity prefabs that support pose manipulation via the `SMPLX` component. Start from exported SMPL-X models and finish with scene-ready prefabs whose poses you can adjust in real time.
+This Unity project takes raw SMPL-X models and turns them into fully usable Unity prefabs that support pose manipulation via the `SMPLX` component. Start from exported SMPL-X models and finish with scene-ready prefabs whose poses you can adjust in real time.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -20,7 +20,7 @@ This Unity project takes raw SMPL-X GameDev 2 output models and turns them into 
 Each SMPL-X model is imported, converted into a prefab, configured with `SMPLX.cs`, and assigned the correct body type (Male / Female / Neutral). Any prefab can then be dropped into a scene and posed instantly.
 
 ## Starting Point
-- Source: SMPL-X GameDev 2 output models
+- Source: SMPL-X models
 - Included in those models: SMPL-X mesh, skeleton, pose/shape/expression support
 - No retargeting or rig conversion required
 
@@ -45,7 +45,7 @@ Assets/
 
 ## Step-by-Step Setup
 ### Step 1: Import SMPL-X Models
-1) Download the SMPL-X GameDev 2 output models.
+1) Download the SMPL-X models from [Asset Download](#asset-download).
 2) Place them in `Assets/`.
 
 ### Step 2: Load Models into Hierarchy
@@ -70,10 +70,22 @@ For each prefab:
 3) Adjust pose parameters with the `SMPLX` component sliders in the Inspector; pose updates apply instantly.
 
 ## Asset Download
-- SMPL-X GameDev 2 output models: https://drive.google.com/drive/folders/1VGCQE2hc5W3VZN0CM3zILKSPlRSSl6Tv?usp=sharing
+
+- The SMPL-X model must be obtained separately from the official SMPL-X website
+  provided.
+
+- Download link:
+  https://smpl-x.is.tue.mpg.de/download.php
+
+- Under **SMPL-X Unity Package**, click **Download SMPL-X Unity Project**.
+
+- Import the downloaded package locally into Unity.
+  If required, delete any conflicting `.meta` files before importing.
+
+⚠️ **Maintain the proper Unity project structure when importing SMPL-X assets.**
+
 
 ## Important Notes
-- Begin strictly from SMPL-X GameDev 2 output.
 - Convert every model into a prefab.
 - Attach `SMPLX.cs` to every prefab.
 - Ensure Model Type matches the avatar mesh (Male/Female/Neutral).

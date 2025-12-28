@@ -383,6 +383,23 @@ int index = i;
 **Unity Version:** 2019.x - 2023.x  
 <!-- **License:** [Specify your license] -->
 
+
+### SMPL-X Notice
+
+This project uses the SMPL-X body model for academic research purposes only.
+
+The SMPL-X model, data, and software are NOT included in this repository.
+They are subject to a separate non-commercial license by the
+Max Planck Institute for Intelligent Systems / Max-Planck-Gesellschaft.
+
+Users must obtain SMPL-X separately from the official source and agree
+to its license terms.
+
+SMPL-X Citation:
+Pavlakos et al., "Expressive Body Capture: 3D Hands, Face, and Body from a Single Image",
+CVPR 2019.
+
+
 ---
 
 *For detailed step-by-step instructions with screenshots for each module, refer to the individual README files in the respective SMPLX folders.*
