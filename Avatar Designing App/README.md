@@ -55,9 +55,11 @@ The system is designed for character customization menus, avatar editors, resear
 
 ---
 
-[![Demo Video](Images/Avatar%20main%20(pos%20and%20cloth).png)](Avatar%20Designing%20App.mp4)
+![Img](Images/Avatar%20main%20(pos%20and%20cloth).png)
 
 ![Img](Images/Avatar%20main%20(shape%20and%20exp).png)
+
+[Demo Video](Avatar%20Designing%20App.mp4)
 
 --
 
